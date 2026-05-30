@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function matchIsLocked() {
+      let matchv = get(/databases/$(database)/documents/matches/$(resource.data.matchId));
+      return matchv.data.scheduledAt <= request.time;
+    }
+    
+    function incomingMatchIsLocked() {
+      let matchv = get(/databases/$(database)/documents/matches/$(request.resource.data.matchId));
+      return matchv.data.scheduledAt <= request.time;
+    }
+
+    // Colección de Usuarios
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId);
+      allow update: if isAdmin() || (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'totalPoints', 'exactPredictions', 'totalPredictions']));
+    }
+
+    // Colección de Partidos
+    match /matches/{matchId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Colección de Predicciones
+    match /predictions/{predictionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && !incomingMatchIsLocked();
+      allow update: if isAuthenticated() && isOwner(resource.data.userId) && !matchIsLocked() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['points', 'isLocked', 'userId', 'matchId']);
+      allow delete: if false;
+    }
+
+    // Colección de Clasificaciones
+    match /rankings/{rankingId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}
