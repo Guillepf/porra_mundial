@@ -22,7 +22,8 @@
     "seed": "npx tsx scripts/seed.ts"
   },
   "devDependencies": {
-    "gh-pages": "^5.0.0"
+    "gh-pages": "^5.0.0",
+    "husky": "^8.0.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
