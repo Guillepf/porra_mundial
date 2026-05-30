@@ -1,4 +1,4 @@
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
 import { AuthProvider } from '@/app/providers/AuthProvider';
@@ -8,13 +8,13 @@ import { Router } from './Router';
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <HashRouter>
         <ThemeProvider>
           <AuthProvider>
             <Router />
           </AuthProvider>
         </ThemeProvider>
-      </BrowserRouter>
+      </HashRouter>
     </QueryClientProvider>
   );
 }
