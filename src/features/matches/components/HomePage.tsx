@@ -11,8 +11,10 @@ export function HomePage() {
   const { user, profile } = useAuth();
   const [matches, setMatches] = useState<Match[]>([]);
   const [predictions, setPredictions] = useState<Record<string, Prediction>>({});
+  const [pendingEdits, setPendingEdits] = useState<Record<string, { home: string; away: string; edited: boolean }>>({});
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [savingAll, setSavingAll] = useState(false);
   
   // Filtros
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'finished'>('all');
@@ -72,11 +74,41 @@ export function HomePage() {
           updatedAt: new Date() as any,
         },
       }));
+      // Clear pending edit for this match
+      setPendingEdits((prev) => {
+        const copy = { ...prev };
+        delete copy[matchId];
+        return copy;
+      });
     } catch (err: any) {
       alert(err.message || 'Error al guardar el pronóstico');
     } finally {
       setSavingId(null);
     }
+  };
+
+  const handleEdit = (matchId: string, home: string, away: string, edited: boolean) => {
+    setPendingEdits((prev) => ({
+      ...prev,
+      [matchId]: { home, away, edited },
+    }));
+  };
+
+  const handleSaveAll = async () => {
+    if (!user) return;
+    const entries = Object.entries(pendingEdits).filter(([, v]) => v.edited);
+    if (entries.length === 0) return;
+    setSavingAll(true);
+    for (const [matchId, { home, away }] of entries) {
+      const h = parseInt(home || '0');
+      const a = parseInt(away || '0');
+      try {
+        await handleSavePrediction(matchId, h, a);
+      } catch (e) {
+        console.error('Error guardando', matchId, e);
+      }
+    }
+    setSavingAll(false);
   };
 
   // Filtrado final de los partidos
@@ -175,6 +207,14 @@ export function HomePage() {
               </option>
             ))}
           </select>
+          <Button
+            size="sm"
+            onClick={handleSaveAll}
+            disabled={savingAll || Object.values(pendingEdits).every((p) => !p.edited)}
+            className="ml-2"
+          >
+            {savingAll ? 'Guardando...' : 'Guardar todos'}
+          </Button>
         </div>
       </div>
 
@@ -192,6 +232,7 @@ export function HomePage() {
               match={match}
               prediction={predictions[match.id] || null}
               onSavePrediction={handleSavePrediction}
+              onEdit={handleEdit}
               isSubmitting={savingId === match.id}
             />
           ))}

@@ -11,10 +11,11 @@ interface MatchCardProps {
   match: Match;
   prediction: Prediction | null;
   onSavePrediction: (matchId: string, homeGoals: number, awayGoals: number) => Promise<void>;
+  onEdit?: (matchId: string, homeGoals: string, awayGoals: string, edited: boolean) => void;
   isSubmitting?: boolean;
 }
 
-export function MatchCard({ match, prediction, onSavePrediction, isSubmitting = false }: MatchCardProps) {
+export function MatchCard({ match, prediction, onSavePrediction, onEdit, isSubmitting = false }: MatchCardProps) {
   const isLocked = isMatchLocked(match.scheduledAt);
   
   const [homeGoals, setHomeGoals] = useState<string>(
@@ -30,11 +31,13 @@ export function MatchCard({ match, prediction, onSavePrediction, isSubmitting = 
   const handleHomeGoalsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHomeGoals(e.target.value.replace(/\D/g, ''));
     setEdited(true);
+    if (onEdit) onEdit(match.id, e.target.value.replace(/\D/g, ''), awayGoals, true);
   };
 
   const handleAwayGoalsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAwayGoals(e.target.value.replace(/\D/g, ''));
     setEdited(true);
+    if (onEdit) onEdit(match.id, homeGoals, e.target.value.replace(/\D/g, ''), true);
   };
 
   const handleSave = async () => {
@@ -47,6 +50,7 @@ export function MatchCard({ match, prediction, onSavePrediction, isSubmitting = 
     try {
       await onSavePrediction(match.id, parseInt(homeGoals), parseInt(awayGoals));
       setEdited(false);
+      if (onEdit) onEdit(match.id, homeGoals, awayGoals, false);
     } catch (err: any) {
       setError(err.message || 'Error al guardar');
     }
