@@ -44,7 +44,7 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && !incomingMatchIsLocked();
       allow update: if (
-        isAdmin() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['userId', 'matchId'])
+        isAdmin()
       ) || (
         isAuthenticated() && isOwner(resource.data.userId) && !matchIsLocked() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['points', 'isLocked', 'userId', 'matchId'])
       );

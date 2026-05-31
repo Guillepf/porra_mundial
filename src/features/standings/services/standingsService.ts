@@ -1,4 +1,4 @@
-import { doc, getDoc, getDocs, collection, query, orderBy, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Ranking, RankingEntry, UserProfile } from '@/types/global.types';
 
@@ -14,11 +14,9 @@ export const standingsService = {
 
     // Fallback: Generar al vuelo desde usuarios si no existe snapshot
     const usersRef = collection(db, 'users');
-    const q = query(usersRef, orderBy('totalPoints', 'desc'), orderBy('exactPredictions', 'desc'));
-    const snapshot = await getDocs(q);
+    const snapshot = await getDocs(usersRef);
 
-    let position = 1;
-    return snapshot.docs.map((doc, index) => {
+    const entries = snapshot.docs.map((doc) => {
       const data = doc.data() as UserProfile;
       return {
         userId: doc.id,
@@ -27,9 +25,21 @@ export const standingsService = {
         totalPoints: data.totalPoints || 0,
         exactPredictions: data.exactPredictions || 0,
         totalPredictions: data.totalPredictions || 0,
-        position: index + 1,
+        position: 0,
       };
     });
+
+    entries.sort((a, b) => {
+      if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints;
+      if (b.exactPredictions !== a.exactPredictions) return b.exactPredictions - a.exactPredictions;
+      if (b.totalPredictions !== a.totalPredictions) return b.totalPredictions - a.totalPredictions;
+      return a.displayName.localeCompare(b.displayName);
+    });
+
+    return entries.map((entry, index) => ({
+      ...entry,
+      position: index + 1,
+    }));
   },
 
   // Actualizar o regenerar el snapshot de clasificación completo
