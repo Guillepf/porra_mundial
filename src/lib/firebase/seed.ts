@@ -4,65 +4,65 @@ import { db } from './config';
 // 48 Selecciones clasificadas del Mundial 2026 distribuidas en 12 Grupos (A - L)
 const TEAMS: Record<string, { name: string; code: string; flag: string }> = {
   // Grupo A
-  MEX: { name: 'México', code: 'MEX', flag: 'mex' },
-  SUD: { name: 'Sudáfrica', code: 'SUD', flag: 'sud' },
-  COR: { name: 'Corea Sur', code: 'COR', flag: 'cor' },
-  RCH: { name: 'República Checa', code: 'RCH', flag: 'rch' },
+  MEX: { name: 'México', code: 'MEX', flag: 'mx' },
+  SUD: { name: 'Sudáfrica', code: 'SUD', flag: 'za' },
+  COR: { name: 'Corea Sur', code: 'COR', flag: 'kr' },
+  RCH: { name: 'República Checa', code: 'RCH', flag: 'cz' },
   // Grupo B
-  CAN: { name: 'Canadá', code: 'CAN', flag: 'can' },
-  BOS: { name: 'Bosnia y Herzegovina', code: 'BOS', flag: 'bos' },
-  CAT: { name: 'Catar', code: 'CAT', flag: 'can' },
-  SUI: { name: 'Suiza', code: 'SUI', flag: 'sui' },
+  CAN: { name: 'Canadá', code: 'CAN', flag: 'ca' },
+  BOS: { name: 'Bosnia y Herzegovina', code: 'BOS', flag: 'ba' },
+  CAT: { name: 'Catar', code: 'CAT', flag: 'qa' },
+  SUI: { name: 'Suiza', code: 'SUI', flag: 'ch' },
   // Grupo C
-  HAI: { name: 'Haití', code: 'HAI', flag: 'hai' },
-  ESC: { name: 'Escocia', code: 'ESC', flag: 'esc' },
-  BRA: { name: 'Brasil', code: 'BRA', flag: 'bra' },
-  MAR: { name: 'Marruecos', code: 'MAR', flag: 'mar' },
+  HAI: { name: 'Haití', code: 'HAI', flag: 'ht' },
+  ESC: { name: 'Escocia', code: 'ESC', flag: 'gb-sct' },
+  BRA: { name: 'Brasil', code: 'BRA', flag: 'br' },
+  MAR: { name: 'Marruecos', code: 'MAR', flag: 'ma' },
   // Grupo D
-  USA: { name: 'Estados Unidos', code: 'USA', flag: 'usa' },
-  PAR: { name: 'Paraguay', code: 'PAR', flag: 'par' },
-  AUS: { name: 'Australia', code: 'AUS', flag: 'aus' },
-  TUR: { name: 'Turquía', code: 'TUR', flag: 'tur' },
+  USA: { name: 'Estados Unidos', code: 'USA', flag: 'us' },
+  PAR: { name: 'Paraguay', code: 'PAR', flag: 'py' },
+  AUS: { name: 'Australia', code: 'AUS', flag: 'au' },
+  TUR: { name: 'Turquía', code: 'TUR', flag: 'tr' },
   // Grupo E
-  CMA: { name: 'Costa de Marfil', code: 'CMA', flag: 'cma' },
-  ECU: { name: 'Ecuador', code: 'ECU', flag: 'ecu' },
-  ALE: { name: 'Alemania', code: 'ALE', flag: 'ale' },
-  CUR: { name: 'Curazao', code: 'CUR', flag: 'cur' },
+  CMA: { name: 'Costa de Marfil', code: 'CMA', flag: 'ci' },
+  ECU: { name: 'Ecuador', code: 'ECU', flag: 'ec' },
+  ALE: { name: 'Alemania', code: 'ALE', flag: 'de' },
+  CUR: { name: 'Curazao', code: 'CUR', flag: 'cw' },
   // Grupo F
-  PBA: { name: 'Países Bajos', code: 'PBA', flag: 'pba' },
-  JAP: { name: 'Japón', code: 'JAP', flag: 'jap' },
-  SUE: { name: 'Suecia', code: 'SUE', flag: 'sue' },
-  TUN: { name: 'Túnez', code: 'TUN', flag: 'tun' },
+  PBA: { name: 'Países Bajos', code: 'PBA', flag: 'nl' },
+  JAP: { name: 'Japón', code: 'JAP', flag: 'jp' },
+  SUE: { name: 'Suecia', code: 'SUE', flag: 'se' },
+  TUN: { name: 'Túnez', code: 'TUN', flag: 'tn' },
   // Grupo G
-  IRA: { name: 'Irán', code: 'IRA', flag: 'ira' },
-  NZE: { name: 'Nueva Zelanda', code: 'NZE', flag: 'nze' },
-  BEL: { name: 'Bélgica', code: 'BEL', flag: 'bel' },
-  EGI: { name: 'Egipto', code: 'EGI', flag: 'egi' },
+  IRA: { name: 'Irán', code: 'IRA', flag: 'ir' },
+  NZE: { name: 'Nueva Zelanda', code: 'NZE', flag: 'nz' },
+  BEL: { name: 'Bélgica', code: 'BEL', flag: 'be' },
+  EGI: { name: 'Egipto', code: 'EGI', flag: 'eg' },
   // Grupo H
-  ARA: { name: 'Arabia Saudí', code: 'ARA', flag: 'ara' },
-  URU: { name: 'Uruguay', code: 'URU', flag: 'uru' },
-  ESP: { name: 'España', code: 'ESP', flag: 'esp' },
-  CAB: { name: 'Cabo Verde', code: 'CAB', flag: 'cab' },
+  ARA: { name: 'Arabia Saudí', code: 'ARA', flag: 'sa' },
+  URU: { name: 'Uruguay', code: 'URU', flag: 'uy' },
+  ESP: { name: 'España', code: 'ESP', flag: 'es' },
+  CAB: { name: 'Cabo Verde', code: 'CAB', flag: 'cv' },
   // Grupo I
-  FRA: { name: 'Francia', code: 'FRA', flag: 'fra' },
-  SEN: { name: 'Senegal', code: 'SEN', flag: 'sen' },
-  IRK: { name: 'Irak', code: 'IRK', flag: 'irk' },
-  NOR: { name: 'Noruega', code: 'NOR', flag: 'nor' },
+  FRA: { name: 'Francia', code: 'FRA', flag: 'fr' },
+  SEN: { name: 'Senegal', code: 'SEN', flag: 'sn' },
+  IRK: { name: 'Irak', code: 'IRK', flag: 'iq' },
+  NOR: { name: 'Noruega', code: 'NOR', flag: 'no' },
   // Grupo J
-  ARG: { name: 'Argentina', code: 'ARG', flag: 'arg' },
-  ARL: { name: 'Argelia', code: 'ARL', flag: 'arl' },
-  AUT: { name: 'Austria', code: 'AUT', flag: 'aut' },
-  JOR: { name: 'Jordania', code: 'JOR', flag: 'JOR' },
+  ARG: { name: 'Argentina', code: 'ARG', flag: 'ar' },
+  ARL: { name: 'Argelia', code: 'ARL', flag: 'dz' },
+  AUT: { name: 'Austria', code: 'AUT', flag: 'at' },
+  JOR: { name: 'Jordania', code: 'JOR', flag: 'jo' },
   // Grupo K
-  POR: { name: 'Portugal', code: 'POR', flag: 'por' },
-  RDC: { name: 'República Democrática del Congo', code: 'RDC', flag: 'rdc' },
-  UZB: { name: 'Uzbekistán', code: 'UZB', flag: 'u🇿b' },
-  COL: { name: 'Colombia', code: 'COL', flag: 'col' },
+  POR: { name: 'Portugal', code: 'POR', flag: 'pt' },
+  RDC: { name: 'República Democrática del Congo', code: 'RDC', flag: 'cd' },
+  UZB: { name: 'Uzbekistán', code: 'UZB', flag: 'uz' },
+  COL: { name: 'Colombia', code: 'COL', flag: 'co' },
   // Grupo L
-  GHA: { name: 'Ghana', code: 'GHA', flag: 'gha' },
-  PAN: { name: 'Panamá', code: 'PAN', flag: 'pan' },
-  ING: { name: 'Inglaterra', code: 'ING', flag: 'ing' },
-  CRO: { name: 'Croacia', code: 'CRO', flag: 'cro' }
+  GHA: { name: 'Ghana', code: 'GHA', flag: 'gh' },
+  PAN: { name: 'Panamá', code: 'PAN', flag: 'pa' },
+  ING: { name: 'Inglaterra', code: 'ING', flag: 'gb-eng' },
+  CRO: { name: 'Croacia', code: 'CRO', flag: 'hr' }
 };
 
 const BASE_MATCHES = [
@@ -219,10 +219,10 @@ const BASE_MATCHES = [
 
 export async function seedMatches(): Promise<void> {
   const batch = writeBatch(db);
-  const now = new Date();
+  const mundialStart = new Date(2026, 5, 11); // 11 de junio de 2026 (mes 5 = junio en 0-indexed)
 
   BASE_MATCHES.forEach((match) => {
-    const scheduledDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + match.daysOffset, match.hour, 0, 0);
+    const scheduledDate = new Date(mundialStart.getFullYear(), mundialStart.getMonth(), mundialStart.getDate() + match.daysOffset, match.hour, 0, 0);
     const matchRef = doc(db, 'matches', match.id);
 
     const matchPayload = {

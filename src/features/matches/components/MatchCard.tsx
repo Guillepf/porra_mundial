@@ -102,7 +102,11 @@ export function MatchCard({ match, prediction, onSavePrediction, isSubmitting = 
         <div className="grid grid-cols-3 items-center text-center py-2 gap-2">
           {/* Local */}
           <div className="flex flex-col items-center space-y-2">
-            <span className="text-3xl md:text-4xl filter drop-shadow-sm select-none">{match.homeTeam.flag}</span>
+            <img
+              src={`https://flagcdn.com/84x63/${match.homeTeam.code.toLowerCase()}.png`}
+              alt={match.homeTeam.name}
+              className="h-16 w-24 object-cover rounded-md border border-border"
+            />
             <span className="font-bold text-xs md:text-sm tracking-tight text-foreground max-w-[90px] md:max-w-none truncate">
               {match.homeTeam.name}
             </span>
@@ -126,7 +130,11 @@ export function MatchCard({ match, prediction, onSavePrediction, isSubmitting = 
 
           {/* Visitante */}
           <div className="flex flex-col items-center space-y-2">
-            <span className="text-3xl md:text-4xl filter drop-shadow-sm select-none">{match.awayTeam.flag}</span>
+            <img
+              src={`https://flagcdn.com/84x63/${match.awayTeam.code.toLowerCase()}.png`}
+              alt={match.awayTeam.name}
+              className="h-16 w-24 object-cover rounded-md border border-border"
+            />
             <span className="font-bold text-xs md:text-sm tracking-tight text-foreground max-w-[90px] md:max-w-none truncate">
               {match.awayTeam.name}
             </span>
