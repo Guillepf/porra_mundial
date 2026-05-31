@@ -4,104 +4,217 @@ import { db } from './config';
 // 48 Selecciones clasificadas del Mundial 2026 distribuidas en 12 Grupos (A - L)
 const TEAMS: Record<string, { name: string; code: string; flag: string }> = {
   // Grupo A
-  USA: { name: 'Estados Unidos', code: 'USA', flag: '🇺🇸' },
-  MEX: { name: 'México', code: 'MEX', flag: '🇲🇽' },
-  CAN: { name: 'Canadá', code: 'CAN', flag: '🇨🇦' },
-  HON: { name: 'Honduras', code: 'HON', flag: '🇭🇳' },
+  MEX: { name: 'México', code: 'MEX', flag: 'mex' },
+  SUD: { name: 'Sudáfrica', code: 'SUD', flag: 'sud' },
+  COR: { name: 'Corea Sur', code: 'COR', flag: 'cor' },
+  RCH: { name: 'República Checa', code: 'RCH', flag: 'rch' },
   // Grupo B
-  ESP: { name: 'España', code: 'ESP', flag: '🇪🇸' },
-  BRA: { name: 'Brasil', code: 'BRA', flag: '🇧🇷' },
-  GER: { name: 'Alemania', code: 'GER', flag: '🇩🇪' },
-  MAR: { name: 'Marruecos', code: 'MAR', flag: '🇲🇦' },
+  CAN: { name: 'Canadá', code: 'CAN', flag: 'can' },
+  BOS: { name: 'Bosnia y Herzegovina', code: 'BOS', flag: 'bos' },
+  CAT: { name: 'Catar', code: 'CAT', flag: 'can' },
+  SUI: { name: 'Suiza', code: 'SUI', flag: 'sui' },
   // Grupo C
-  ARG: { name: 'Argentina', code: 'ARG', flag: '🇦🇷' },
-  FRA: { name: 'Francia', code: 'FRA', flag: '🇫🇷' },
-  ENG: { name: 'Inglaterra', code: 'ENG', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-  ITA: { name: 'Italia', code: 'ITA', flag: '🇮🇹' },
+  HAI: { name: 'Haití', code: 'HAI', flag: 'hai' },
+  ESC: { name: 'Escocia', code: 'ESC', flag: 'esc' },
+  BRA: { name: 'Brasil', code: 'BRA', flag: 'bra' },
+  MAR: { name: 'Marruecos', code: 'MAR', flag: 'mar' },
   // Grupo D
-  POR: { name: 'Portugal', code: 'POR', flag: '🇵🇹' },
-  NED: { name: 'Países Bajos', code: 'NED', flag: '🇳🇱' },
-  URU: { name: 'Uruguay', code: 'URU', flag: '🇺🇾' },
-  SEN: { name: 'Senegal', code: 'SEN', flag: '🇸🇳' },
+  USA: { name: 'Estados Unidos', code: 'USA', flag: 'usa' },
+  PAR: { name: 'Paraguay', code: 'PAR', flag: 'par' },
+  AUS: { name: 'Australia', code: 'AUS', flag: 'aus' },
+  TUR: { name: 'Turquía', code: 'TUR', flag: 'tur' },
   // Grupo E
-  BEL: { name: 'Bélgica', code: 'BEL', flag: '🇧🇪' },
-  CRO: { name: 'Croacia', code: 'CRO', flag: '🇭🇷' },
-  COL: { name: 'Colombia', code: 'COL', flag: '🇨🇴' },
-  JPN: { name: 'Japón', code: 'JPN', flag: '🇯🇵' },
+  CMA: { name: 'Costa de Marfil', code: 'CMA', flag: 'cma' },
+  ECU: { name: 'Ecuador', code: 'ECU', flag: 'ecu' },
+  ALE: { name: 'Alemania', code: 'ALE', flag: 'ale' },
+  CUR: { name: 'Curazao', code: 'CUR', flag: 'cur' },
   // Grupo F
-  CHI: { name: 'Chile', code: 'CHI', flag: '🇨🇱' },
-  ECU: { name: 'Ecuador', code: 'ECU', flag: '🇪🇨' },
-  NGA: { name: 'Nigeria', code: 'NGA', flag: '🇳🇬' },
-  KOR: { name: 'Corea del Sur', code: 'KOR', flag: '🇰🇷' },
+  PBA: { name: 'Países Bajos', code: 'PBA', flag: 'pba' },
+  JAP: { name: 'Japón', code: 'JAP', flag: 'jap' },
+  SUE: { name: 'Suecia', code: 'SUE', flag: 'sue' },
+  TUN: { name: 'Túnez', code: 'TUN', flag: 'tun' },
   // Grupo G
-  SUI: { name: 'Suiza', code: 'SUI', flag: '🇨🇭' },
-  DEN: { name: 'Dinamarca', code: 'DEN', flag: '🇩🇰' },
-  CMR: { name: 'Camerún', code: 'CMR', flag: '🇨🇲' },
-  TUN: { name: 'Túnez', code: 'TUN', flag: '🇹🇳' },
+  IRA: { name: 'Irán', code: 'IRA', flag: 'ira' },
+  NZE: { name: 'Nueva Zelanda', code: 'NZE', flag: 'nze' },
+  BEL: { name: 'Bélgica', code: 'BEL', flag: 'bel' },
+  EGI: { name: 'Egipto', code: 'EGI', flag: 'egi' },
   // Grupo H
-  SWE: { name: 'Suecia', code: 'SWE', flag: '🇸🇪' },
-  UKR: { name: 'Ucrania', code: 'UKR', flag: '🇺🇦' },
-  EGY: { name: 'Egipto', code: 'EGY', flag: '🇪🇬' },
-  AUS: { name: 'Australia', code: 'AUS', flag: '🇦🇺' },
+  ARA: { name: 'Arabia Saudí', code: 'ARA', flag: 'ara' },
+  URU: { name: 'Uruguay', code: 'URU', flag: 'uru' },
+  ESP: { name: 'España', code: 'ESP', flag: 'esp' },
+  CAB: { name: 'Cabo Verde', code: 'CAB', flag: 'cab' },
   // Grupo I
-  TUR: { name: 'Turquía', code: 'TUR', flag: '🇹🇷' },
-  WAL: { name: 'Gales', code: 'WAL', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' },
-  GHA: { name: 'Ghana', code: 'GHA', flag: '🇬🇭' },
-  CRC: { name: 'Costa Rica', code: 'CRC', flag: '🇨🇷' },
+  FRA: { name: 'Francia', code: 'FRA', flag: 'fra' },
+  SEN: { name: 'Senegal', code: 'SEN', flag: 'sen' },
+  IRK: { name: 'Irak', code: 'IRK', flag: 'irk' },
+  NOR: { name: 'Noruega', code: 'NOR', flag: 'nor' },
   // Grupo J
-  AUT: { name: 'Austria', code: 'AUT', flag: '🇦🇹' },
-  POL: { name: 'Polonia', code: 'POL', flag: '🇵🇱' },
-  KSA: { name: 'Arabia Saudí', code: 'KSA', flag: '🇸🇦' },
-  PER: { name: 'Perú', code: 'PER', flag: '🇵🇪' },
+  ARG: { name: 'Argentina', code: 'ARG', flag: 'arg' },
+  ARL: { name: 'Argelia', code: 'ARL', flag: 'arl' },
+  AUT: { name: 'Austria', code: 'AUT', flag: 'aut' },
+  JOR: { name: 'Jordania', code: 'JOR', flag: 'JOR' },
   // Grupo K
-  SCO: { name: 'Escocia', code: 'SCO', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
-  HUN: { name: 'Hungría', code: 'HUN', flag: '🇭🇺' },
-  DZA: { name: 'Argelia', code: 'DZA', flag: '🇩🇿' },
-  NZL: { name: 'Nueva Zelanda', code: 'NZL', flag: '🇳🇿' },
+  POR: { name: 'Portugal', code: 'POR', flag: 'por' },
+  RDC: { name: 'República Democrática del Congo', code: 'RDC', flag: 'rdc' },
+  UZB: { name: 'Uzbekistán', code: 'UZB', flag: 'u🇿b' },
+  COL: { name: 'Colombia', code: 'COL', flag: 'col' },
   // Grupo L
-  CZE: { name: 'República Checa', code: 'CZE', flag: '🇨🇿' },
-  PAR: { name: 'Paraguay', code: 'PAR', flag: '🇵🇾' },
-  CIV: { name: 'Costa de Marfil', code: 'CIV', flag: '🇨🇮' },
-  QAT: { name: 'Catar', code: 'QAT', flag: '🇶🇦' }
+  GHA: { name: 'Ghana', code: 'GHA', flag: 'gha' },
+  PAN: { name: 'Panamá', code: 'PAN', flag: 'pan' },
+  ING: { name: 'Inglaterra', code: 'ING', flag: 'ing' },
+  CRO: { name: 'Croacia', code: 'CRO', flag: 'cro' }
 };
 
 const BASE_MATCHES = [
+  // ── JORNADA 1 ──────────────────────────────────────────────
+
   // Grupo A
-  { id: 'm1', home: 'USA', away: 'MEX', group: 'A', daysOffset: 15, hour: 18 },
-  { id: 'm2', home: 'CAN', away: 'HON', group: 'A', daysOffset: 15, hour: 21 },
+  { id: 'm1',  home: 'MEX', away: 'SUD', group: 'A', daysOffset: 0,  hour: 19 }, // 13h UTC-6 → 19h Madrid
+  { id: 'm2',  home: 'COR', away: 'RCH', group: 'A', daysOffset: 1,  hour: 2 }, // 20h UTC-6 → 02h+1 Madrid (26 = 02:00 del día siguiente)
+
   // Grupo B
-  { id: 'm3', home: 'ESP', away: 'GER', group: 'B', daysOffset: 16, hour: 15 },
-  { id: 'm4', home: 'BRA', away: 'MAR', group: 'B', daysOffset: 16, hour: 20 },
+  { id: 'm3',  home: 'CAN', away: 'BOS', group: 'B', daysOffset: 1,  hour: 21 }, // 15h UTC-4 → 21h Madrid
+  { id: 'm4',  home: 'CAT', away: 'SUI', group: 'B', daysOffset: 1,  hour: 20 }, // 12h UTC-7 → 21h Madrid — mismo día
+
   // Grupo C
-  { id: 'm5', home: 'ARG', away: 'ITA', group: 'C', daysOffset: 17, hour: 18 },
-  { id: 'm6', home: 'FRA', away: 'ENG', group: 'C', daysOffset: 17, hour: 21 },
+  { id: 'm5',  home: 'HAI', away: 'ESC', group: 'C', daysOffset: 3,  hour: 3 }, // 21h UTC-4 → 03h+1 Madrid
+  { id: 'm6',  home: 'BRA', away: 'MAR', group: 'C', daysOffset: 2,  hour: 22 }, // 18h UTC-4 → 00h Madrid (medianoche)
+
   // Grupo D
-  { id: 'm7', home: 'POR', away: 'URU', group: 'D', daysOffset: 18, hour: 15 },
-  { id: 'm8', home: 'NED', away: 'SEN', group: 'D', daysOffset: 18, hour: 20 },
+  { id: 'm7',  home: 'USA', away: 'PAR', group: 'D', daysOffset: 2,  hour: 2 }, // 18h UTC-7 → 02h+1 Madrid
+  { id: 'm8',  home: 'AUS', away: 'TUR', group: 'D', daysOffset: 3,  hour: 5 }, // 21h UTC-7 → 05h+1 Madrid
+
   // Grupo E
-  { id: 'm9', home: 'BEL', away: 'JPN', group: 'E', daysOffset: 19, hour: 18 },
-  { id: 'm10', home: 'CRO', away: 'COL', group: 'E', daysOffset: 19, hour: 21 },
+  { id: 'm9',  home: 'CMA', away: 'ECU', group: 'E', daysOffset: 4,  hour: 1 }, // 19h UTC-4 → 01h+1 Madrid
+  { id: 'm10', home: 'ALE', away: 'CUR', group: 'E', daysOffset: 3,  hour: 19 }, // 12h UTC-5 → 19h Madrid
+
   // Grupo F
-  { id: 'm11', home: 'CHI', away: 'KOR', group: 'F', daysOffset: 20, hour: 15 },
-  { id: 'm12', home: 'ECU', away: 'NGA', group: 'F', daysOffset: 20, hour: 20 },
+  { id: 'm11', home: 'PBA', away: 'JAP', group: 'F', daysOffset: 3,  hour: 22 }, // 15h UTC-5 → 22h Madrid
+  { id: 'm12', home: 'SUE', away: 'TUN', group: 'F', daysOffset: 4,  hour: 4 }, // 20h UTC-6 → 04h+1 Madrid
+
   // Grupo G
-  { id: 'm13', home: 'SUI', away: 'CMR', group: 'G', daysOffset: 21, hour: 18 },
-  { id: 'm14', home: 'DEN', away: 'TUN', group: 'G', daysOffset: 21, hour: 21 },
+  { id: 'm13', home: 'IRA', away: 'NZE', group: 'G', daysOffset: 5,  hour: 3 }, // 18h UTC-7 → 03h+1 Madrid
+  { id: 'm14', home: 'BEL', away: 'EGI', group: 'G', daysOffset: 4,  hour: 21 }, // 12h UTC-7 → 21h Madrid
+
   // Grupo H
-  { id: 'm15', home: 'SWE', away: 'EGY', group: 'H', daysOffset: 22, hour: 15 },
-  { id: 'm16', home: 'UKR', away: 'AUS', group: 'H', daysOffset: 22, hour: 20 },
+  { id: 'm15', home: 'ARA', away: 'URU', group: 'H', daysOffset: 5,  hour: 0 }, // 18h UTC-4 → 00h Madrid
+  { id: 'm16', home: 'ESP', away: 'CAB', group: 'H', daysOffset: 4,  hour: 18 }, // 12h UTC-4 → 18h Madrid
+
   // Grupo I
-  { id: 'm17', home: 'TUR', away: 'GHA', group: 'I', daysOffset: 23, hour: 18 },
-  { id: 'm18', home: 'WAL', away: 'CRC', group: 'I', daysOffset: 23, hour: 21 },
+  { id: 'm17', home: 'FRA', away: 'SEN', group: 'I', daysOffset: 5,  hour: 21 }, // 15h UTC-4 → 21h Madrid
+  { id: 'm18', home: 'IRK', away: 'NOR', group: 'I', daysOffset: 6,  hour: 0 }, // 18h UTC-4 → 00h Madrid
+
   // Grupo J
-  { id: 'm19', home: 'AUT', away: 'KSA', group: 'J', daysOffset: 24, hour: 15 },
-  { id: 'm20', home: 'POL', away: 'PER', group: 'J', daysOffset: 24, hour: 20 },
+  { id: 'm19', home: 'ARG', away: 'ARL', group: 'J', daysOffset: 6,  hour: 3 }, // 20h UTC-5 → 03h+1 Madrid
+  { id: 'm20', home: 'AUT', away: 'JOR', group: 'J', daysOffset: 6,  hour: 6 }, // 21h UTC-7 → 06h+1 Madrid
+
   // Grupo K
-  { id: 'm21', home: 'SCO', away: 'DZA', group: 'K', daysOffset: 25, hour: 18 },
-  { id: 'm22', home: 'HUN', away: 'NZL', group: 'K', daysOffset: 25, hour: 21 },
+  { id: 'm21', home: 'POR', away: 'RDC', group: 'K', daysOffset: 6,  hour: 19 }, // 12h UTC-5 → 19h Madrid
+  { id: 'm22', home: 'UZB', away: 'COL', group: 'K', daysOffset: 7,  hour: 4 }, // 20h UTC-6 → 04h+1 Madrid
+
   // Grupo L
-  { id: 'm23', home: 'CZE', away: 'CIV', group: 'L', daysOffset: 26, hour: 15 },
-  { id: 'm24', home: 'PAR', away: 'QAT', group: 'L', daysOffset: 26, hour: 20 }
+  { id: 'm23', home: 'GHA', away: 'PAN', group: 'L', daysOffset: 7,  hour: 1 }, // 19h UTC-5 → 01h+1 Madrid
+  { id: 'm24', home: 'ING', away: 'CRO', group: 'L', daysOffset: 6,  hour: 21 }, // 15h UTC-4 → 21h Madrid
+
+  // ── JORNADA 2 ──────────────────────────────────────────────
+
+  // Grupo A
+  { id: 'm25', home: 'RCH', away: 'SUD', group: 'A', daysOffset: 7,  hour: 18 }, // 12h UTC-4 → 18h Madrid
+  { id: 'm26', home: 'MEX', away: 'COR', group: 'A', daysOffset: 8,  hour: 1 }, // 19h UTC-6 → 01h+1 Madrid
+
+  // Grupo B
+  { id: 'm27', home: 'SUI', away: 'BOS', group: 'B', daysOffset: 7,  hour: 21 }, // 12h UTC-7 → 21h Madrid
+  { id: 'm28', home: 'CAN', away: 'CAT', group: 'B', daysOffset: 8,  hour: 0 }, // 15h UTC-7 → 00h Madrid
+
+  // Grupo C
+  { id: 'm29', home: 'BRA', away: 'HAI', group: 'C', daysOffset: 9,  hour: 3 }, // 21h UTC-4 → 03h+1 Madrid
+  { id: 'm30', home: 'ESC', away: 'MAR', group: 'C', daysOffset: 9,  hour: 0 }, // 18h UTC-4 → 00h Madrid
+
+  // Grupo D
+  { id: 'm31', home: 'TUR', away: 'PAR', group: 'D', daysOffset: 9,  hour: 6 }, // 21h UTC-7 → 06h+1 Madrid
+  { id: 'm32', home: 'USA', away: 'AUS', group: 'D', daysOffset: 8,  hour: 21 }, // 12h UTC-7 → 21h Madrid
+
+  // Grupo E
+  { id: 'm33', home: 'ALE', away: 'CMA', group: 'E', daysOffset: 9,  hour: 22 }, // 16h UTC-4 → 22h Madrid
+  { id: 'm34', home: 'ECU', away: 'CUR', group: 'E', daysOffset: 10,  hour: 2 }, // 19h UTC-5 → 01h+1 Madrid (daysOffset sería 10 si lo tratas como día siguiente)
+
+  // Grupo F
+  { id: 'm35', home: 'PBA', away: 'SUE', group: 'F', daysOffset: 9,  hour: 19 }, // 12h UTC-5 → 19h Madrid
+  { id: 'm36', home: 'TUN', away: 'JAP', group: 'F', daysOffset: 10, hour: 6  }, // 22h UTC-6 → 06h+1 Madrid
+
+  // Grupo G
+  { id: 'm37', home: 'BEL', away: 'IRA', group: 'G', daysOffset: 10, hour: 21 }, // 12h UTC-7 → 21h Madrid
+  { id: 'm38', home: 'NZE', away: 'EGI', group: 'G', daysOffset: 11, hour: 2 }, // 18h UTC-7 → 01h+1 Madrid (o 03h si UTC-7)
+
+  // Grupo H
+  { id: 'm39', home: 'URU', away: 'CAB', group: 'H', daysOffset: 11, hour: 0 }, // 18h UTC-4 → 00h Madrid
+  { id: 'm40', home: 'ESP', away: 'ARA', group: 'H', daysOffset: 10, hour: 18 }, // 12h UTC-4 → 18h Madrid
+
+  // Grupo I
+  { id: 'm41', home: 'NOR', away: 'SEN', group: 'I', daysOffset: 12, hour: 2 }, // 20h UTC-4 → 02h+1 Madrid
+  { id: 'm42', home: 'FRA', away: 'IRK', group: 'I', daysOffset: 11, hour: 23 }, // 17h UTC-4 → 23h Madrid
+
+  // Grupo J
+  { id: 'm43', home: 'ARG', away: 'AUT', group: 'J', daysOffset: 11, hour: 19 }, // 12h UTC-5 → 19h Madrid
+  { id: 'm44', home: 'JOR', away: 'ARL', group: 'J', daysOffset: 12, hour: 4 }, // 20h UTC-7 → 04h+1 Madrid
+
+  // Grupo K
+  { id: 'm45', home: 'POR', away: 'UZB', group: 'K', daysOffset: 12, hour: 19 }, // 12h UTC-5 → 19h Madrid
+  { id: 'm46', home: 'COL', away: 'RDC', group: 'K', daysOffset: 13, hour: 4 }, // 20h UTC-6 → 04h+1 Madrid
+
+  // Grupo L
+  { id: 'm47', home: 'ING', away: 'GHA', group: 'L', daysOffset: 12, hour: 22 }, // 16h UTC-4 → 22h Madrid
+  { id: 'm48', home: 'PAN', away: 'CRO', group: 'L', daysOffset: 13, hour: 3 }, // 19h UTC-4 → 01h+1 Madrid
+
+  // ── JORNADA 3 ──────────────────────────────────────────────
+
+  // Grupo A (simultáneos)
+  { id: 'm49', home: 'RCH', away: 'MEX', group: 'A', daysOffset: 14, hour: 1 }, // 19h UTC-6 → 01h+1 Madrid
+  { id: 'm50', home: 'SUD', away: 'COR', group: 'A', daysOffset: 14, hour: 1 },
+
+  // Grupo B (simultáneos)
+  { id: 'm51', home: 'SUI', away: 'CAN', group: 'B', daysOffset: 13, hour: 21 }, // 12h UTC-7 → 21h Madrid
+  { id: 'm52', home: 'BOS', away: 'CAT', group: 'B', daysOffset: 13, hour: 21 },
+
+  // Grupo C (simultáneos)
+  { id: 'm53', home: 'ESC', away: 'BRA', group: 'C', daysOffset: 14, hour: 0 }, // 18h UTC-4 → 00h Madrid
+  { id: 'm54', home: 'MAR', away: 'HAI', group: 'C', daysOffset: 14, hour: 0 },
+
+  // Grupo D (simultáneos)
+  { id: 'm55', home: 'TUR', away: 'USA', group: 'D', daysOffset: 15, hour: 3 }, // 19h UTC-7 → 03h+1 Madrid
+  { id: 'm56', home: 'PAR', away: 'AUS', group: 'D', daysOffset: 15, hour: 3 },
+
+  // Grupo E (simultáneos)
+  { id: 'm57', home: 'CUR', away: 'CMA', group: 'E', daysOffset: 14, hour: 22 }, // 16h UTC-4 → 22h Madrid
+  { id: 'm58', home: 'ECU', away: 'ALE', group: 'E', daysOffset: 14, hour: 22 },
+
+  // Grupo F (simultáneos)
+  { id: 'm59', home: 'JAP', away: 'SUE', group: 'F', daysOffset: 15, hour: 1 }, // 18h UTC-5 → 01h+1 Madrid
+  { id: 'm60', home: 'TUN', away: 'PBA', group: 'F', daysOffset: 15, hour: 1 },
+
+  // Grupo G (simultáneos)
+  { id: 'm61', home: 'EGI', away: 'IRA', group: 'G', daysOffset: 16, hour: 4 }, // 20h UTC-7 → 04h+1 Madrid
+  { id: 'm62', home: 'NZE', away: 'BEL', group: 'G', daysOffset: 16, hour: 4 },
+
+  // Grupo H (simultáneos)
+  { id: 'm63', home: 'CAB', away: 'ARA', group: 'H', daysOffset: 16, hour: 2 }, // 19h UTC-5 → 01h+1 Madrid
+  { id: 'm64', home: 'URU', away: 'ESP', group: 'H', daysOffset: 16, hour: 2 }, // 18h UTC-6 → 02h+1 Madrid
+
+  // Grupo I (simultáneos)
+  { id: 'm65', home: 'NOR', away: 'FRA', group: 'I', daysOffset: 15, hour: 21 }, // 15h UTC-4 → 21h Madrid
+  { id: 'm66', home: 'SEN', away: 'IRK', group: 'I', daysOffset: 15, hour: 21 },
+
+  // Grupo J (simultáneos)
+  { id: 'm67', home: 'ARL', away: 'AUT', group: 'J', daysOffset: 17, hour: 4 }, // 21h UTC-5 → 03h+1 ó 05h+1 UTC-7
+  { id: 'm68', home: 'JOR', away: 'ARG', group: 'J', daysOffset: 17, hour: 4 },
+
+  // Grupo K (simultáneos)
+  { id: 'm69', home: 'COL', away: 'POR', group: 'K', daysOffset: 17, hour: 1 }, // 19:30h UTC-4 → ~01:30h+1 Madrid
+  { id: 'm70', home: 'RDC', away: 'UZB', group: 'K', daysOffset: 17, hour: 1 },
+
+  // Grupo L (simultáneos)
+  { id: 'm71', home: 'PAN', away: 'ING', group: 'L', daysOffset: 16, hour: 23 }, // 17h UTC-4 → 23h Madrid
+  { id: 'm72', home: 'CRO', away: 'GHA', group: 'L', daysOffset: 16, hour: 23 },
 ];
 
 export async function seedMatches(): Promise<void> {
