@@ -12,10 +12,11 @@ interface MatchCardProps {
   prediction: Prediction | null;
   onSavePrediction: (matchId: string, homeGoals: number, awayGoals: number) => Promise<void>;
   onEdit?: (matchId: string, homeGoals: string, awayGoals: string, edited: boolean) => void;
+  hideSaveButton?: boolean;
   isSubmitting?: boolean;
 }
 
-export function MatchCard({ match, prediction, onSavePrediction, onEdit, isSubmitting = false }: MatchCardProps) {
+export function MatchCard({ match, prediction, onSavePrediction, onEdit, hideSaveButton = false, isSubmitting = false }: MatchCardProps) {
   const isLocked = isMatchLocked(match.scheduledAt);
   
   const [homeGoals, setHomeGoals] = useState<string>(
@@ -175,7 +176,7 @@ export function MatchCard({ match, prediction, onSavePrediction, onEdit, isSubmi
               className="w-12 h-10 text-center font-extrabold text-lg bg-secondary/30"
             />
 
-            {!isLocked && edited && (
+            {!isLocked && edited && !hideSaveButton && (
               <Button
                 size="sm"
                 onClick={handleSave}

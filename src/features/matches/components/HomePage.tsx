@@ -15,6 +15,7 @@ export function HomePage() {
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savingAll, setSavingAll] = useState(false);
+  const [hideIndividualSaveButtons, setHideIndividualSaveButtons] = useState(false);
   
   // Filtros
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'finished'>('all');
@@ -98,6 +99,8 @@ export function HomePage() {
     if (!user) return;
     const entries = Object.entries(pendingEdits).filter(([, v]) => v.edited);
     if (entries.length === 0) return;
+    // Hide individual save buttons while batch saving
+    setHideIndividualSaveButtons(true);
     setSavingAll(true);
     for (const [matchId, { home, away }] of entries) {
       const h = parseInt(home || '0');
@@ -233,6 +236,7 @@ export function HomePage() {
               prediction={predictions[match.id] || null}
               onSavePrediction={handleSavePrediction}
               onEdit={handleEdit}
+              hideSaveButton={hideIndividualSaveButtons}
               isSubmitting={savingId === match.id}
             />
           ))}
