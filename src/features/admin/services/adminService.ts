@@ -10,7 +10,7 @@ export const adminService = {
     const finalId = matchId || `match_${Date.now()}`;
     const docRef = doc(db, 'matches', finalId);
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       ...matchData,
       updatedAt: serverTimestamp(),
     };
