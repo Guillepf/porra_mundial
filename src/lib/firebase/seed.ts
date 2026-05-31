@@ -69,20 +69,20 @@ const BASE_MATCHES = [
   // ── JORNADA 1 ──────────────────────────────────────────────
 
   // Grupo A
-  { id: 'm1',  home: 'MEX', away: 'SUD', group: 'A', daysOffset: 0,  hour: 19 }, // 13h UTC-6 → 19h Madrid
-  { id: 'm2',  home: 'COR', away: 'RCH', group: 'A', daysOffset: 1,  hour: 2 }, // 20h UTC-6 → 02h+1 Madrid (26 = 02:00 del día siguiente)
+  { id: 'm1',  home: 'MEX', away: 'SUD', group: 'A', daysOffset: 0,  hour: 21 }, // 13h UTC-6 → 19h Madrid
+  { id: 'm2',  home: 'COR', away: 'RCH', group: 'A', daysOffset: 1,  hour: 4 }, // 20h UTC-6 → 02h+1 Madrid (26 = 02:00 del día siguiente)
 
   // Grupo B
   { id: 'm3',  home: 'CAN', away: 'BOS', group: 'B', daysOffset: 1,  hour: 21 }, // 15h UTC-4 → 21h Madrid
-  { id: 'm4',  home: 'CAT', away: 'SUI', group: 'B', daysOffset: 1,  hour: 20 }, // 12h UTC-7 → 21h Madrid — mismo día
+  { id: 'm4',  home: 'CAT', away: 'SUI', group: 'B', daysOffset: 2,  hour: 21 }, // 12h UTC-7 → 21h Madrid — mismo día
 
   // Grupo C
   { id: 'm5',  home: 'HAI', away: 'ESC', group: 'C', daysOffset: 3,  hour: 3 }, // 21h UTC-4 → 03h+1 Madrid
-  { id: 'm6',  home: 'BRA', away: 'MAR', group: 'C', daysOffset: 2,  hour: 22 }, // 18h UTC-4 → 00h Madrid (medianoche)
+  { id: 'm6',  home: 'BRA', away: 'MAR', group: 'C', daysOffset: 3,  hour: 0 }, // 18h UTC-4 → 00h Madrid (medianoche)
 
   // Grupo D
-  { id: 'm7',  home: 'USA', away: 'PAR', group: 'D', daysOffset: 2,  hour: 2 }, // 18h UTC-7 → 02h+1 Madrid
-  { id: 'm8',  home: 'AUS', away: 'TUR', group: 'D', daysOffset: 3,  hour: 5 }, // 21h UTC-7 → 05h+1 Madrid
+  { id: 'm7',  home: 'USA', away: 'PAR', group: 'D', daysOffset: 2,  hour: 3 }, // 18h UTC-7 → 02h+1 Madrid
+  { id: 'm8',  home: 'AUS', away: 'TUR', group: 'D', daysOffset: 3,  hour: 6 }, // 21h UTC-7 → 05h+1 Madrid
 
   // Grupo E
   { id: 'm9',  home: 'CMA', away: 'ECU', group: 'E', daysOffset: 4,  hour: 1 }, // 19h UTC-4 → 01h+1 Madrid
@@ -114,24 +114,24 @@ const BASE_MATCHES = [
 
   // Grupo L
   { id: 'm23', home: 'GHA', away: 'PAN', group: 'L', daysOffset: 7,  hour: 1 }, // 19h UTC-5 → 01h+1 Madrid
-  { id: 'm24', home: 'ING', away: 'CRO', group: 'L', daysOffset: 6,  hour: 21 }, // 15h UTC-4 → 21h Madrid
+  { id: 'm24', home: 'ING', away: 'CRO', group: 'L', daysOffset: 6,  hour: 22 }, // 15h UTC-4 → 21h Madrid
 
   // ── JORNADA 2 ──────────────────────────────────────────────
 
   // Grupo A
   { id: 'm25', home: 'RCH', away: 'SUD', group: 'A', daysOffset: 7,  hour: 18 }, // 12h UTC-4 → 18h Madrid
-  { id: 'm26', home: 'MEX', away: 'COR', group: 'A', daysOffset: 8,  hour: 1 }, // 19h UTC-6 → 01h+1 Madrid
+  { id: 'm26', home: 'MEX', away: 'COR', group: 'A', daysOffset: 8,  hour: 3 }, // 19h UTC-6 → 01h+1 Madrid
 
   // Grupo B
   { id: 'm27', home: 'SUI', away: 'BOS', group: 'B', daysOffset: 7,  hour: 21 }, // 12h UTC-7 → 21h Madrid
   { id: 'm28', home: 'CAN', away: 'CAT', group: 'B', daysOffset: 8,  hour: 0 }, // 15h UTC-7 → 00h Madrid
 
   // Grupo C
-  { id: 'm29', home: 'BRA', away: 'HAI', group: 'C', daysOffset: 9,  hour: 3 }, // 21h UTC-4 → 03h+1 Madrid
+  { id: 'm29', home: 'BRA', away: 'HAI', group: 'C', daysOffset: 9,  hour: 2.5 }, // 21h UTC-4 → 03h+1 Madrid
   { id: 'm30', home: 'ESC', away: 'MAR', group: 'C', daysOffset: 9,  hour: 0 }, // 18h UTC-4 → 00h Madrid
 
   // Grupo D
-  { id: 'm31', home: 'TUR', away: 'PAR', group: 'D', daysOffset: 9,  hour: 6 }, // 21h UTC-7 → 06h+1 Madrid
+  { id: 'm31', home: 'TUR', away: 'PAR', group: 'D', daysOffset: 9,  hour: 5 }, // 21h UTC-7 → 06h+1 Madrid
   { id: 'm32', home: 'USA', away: 'AUS', group: 'D', daysOffset: 8,  hour: 21 }, // 12h UTC-7 → 21h Madrid
 
   // Grupo E
@@ -144,7 +144,7 @@ const BASE_MATCHES = [
 
   // Grupo G
   { id: 'm37', home: 'BEL', away: 'IRA', group: 'G', daysOffset: 10, hour: 21 }, // 12h UTC-7 → 21h Madrid
-  { id: 'm38', home: 'NZE', away: 'EGI', group: 'G', daysOffset: 11, hour: 2 }, // 18h UTC-7 → 01h+1 Madrid (o 03h si UTC-7)
+  { id: 'm38', home: 'NZE', away: 'EGI', group: 'G', daysOffset: 11, hour: 3 }, // 18h UTC-7 → 01h+1 Madrid (o 03h si UTC-7)
 
   // Grupo H
   { id: 'm39', home: 'URU', away: 'CAB', group: 'H', daysOffset: 11, hour: 0 }, // 18h UTC-4 → 00h Madrid
@@ -156,7 +156,7 @@ const BASE_MATCHES = [
 
   // Grupo J
   { id: 'm43', home: 'ARG', away: 'AUT', group: 'J', daysOffset: 11, hour: 19 }, // 12h UTC-5 → 19h Madrid
-  { id: 'm44', home: 'JOR', away: 'ARL', group: 'J', daysOffset: 12, hour: 4 }, // 20h UTC-7 → 04h+1 Madrid
+  { id: 'm44', home: 'JOR', away: 'ARL', group: 'J', daysOffset: 12, hour: 5 }, // 20h UTC-7 → 04h+1 Madrid
 
   // Grupo K
   { id: 'm45', home: 'POR', away: 'UZB', group: 'K', daysOffset: 12, hour: 19 }, // 12h UTC-5 → 19h Madrid
@@ -164,13 +164,13 @@ const BASE_MATCHES = [
 
   // Grupo L
   { id: 'm47', home: 'ING', away: 'GHA', group: 'L', daysOffset: 12, hour: 22 }, // 16h UTC-4 → 22h Madrid
-  { id: 'm48', home: 'PAN', away: 'CRO', group: 'L', daysOffset: 13, hour: 3 }, // 19h UTC-4 → 01h+1 Madrid
+  { id: 'm48', home: 'PAN', away: 'CRO', group: 'L', daysOffset: 13, hour: 1 }, // 19h UTC-4 → 01h+1 Madrid
 
   // ── JORNADA 3 ──────────────────────────────────────────────
 
   // Grupo A (simultáneos)
-  { id: 'm49', home: 'RCH', away: 'MEX', group: 'A', daysOffset: 14, hour: 1 }, // 19h UTC-6 → 01h+1 Madrid
-  { id: 'm50', home: 'SUD', away: 'COR', group: 'A', daysOffset: 14, hour: 1 },
+  { id: 'm49', home: 'RCH', away: 'MEX', group: 'A', daysOffset: 14, hour: 3 }, // 19h UTC-6 → 01h+1 Madrid
+  { id: 'm50', home: 'SUD', away: 'COR', group: 'A', daysOffset: 14, hour: 3 },
 
   // Grupo B (simultáneos)
   { id: 'm51', home: 'SUI', away: 'CAN', group: 'B', daysOffset: 13, hour: 21 }, // 12h UTC-7 → 21h Madrid
@@ -181,8 +181,8 @@ const BASE_MATCHES = [
   { id: 'm54', home: 'MAR', away: 'HAI', group: 'C', daysOffset: 14, hour: 0 },
 
   // Grupo D (simultáneos)
-  { id: 'm55', home: 'TUR', away: 'USA', group: 'D', daysOffset: 15, hour: 3 }, // 19h UTC-7 → 03h+1 Madrid
-  { id: 'm56', home: 'PAR', away: 'AUS', group: 'D', daysOffset: 15, hour: 3 },
+  { id: 'm55', home: 'TUR', away: 'USA', group: 'D', daysOffset: 15, hour: 4 }, // 19h UTC-7 → 03h+1 Madrid
+  { id: 'm56', home: 'PAR', away: 'AUS', group: 'D', daysOffset: 15, hour: 4 },
 
   // Grupo E (simultáneos)
   { id: 'm57', home: 'CUR', away: 'CMA', group: 'E', daysOffset: 14, hour: 22 }, // 16h UTC-4 → 22h Madrid
@@ -193,8 +193,8 @@ const BASE_MATCHES = [
   { id: 'm60', home: 'TUN', away: 'PBA', group: 'F', daysOffset: 15, hour: 1 },
 
   // Grupo G (simultáneos)
-  { id: 'm61', home: 'EGI', away: 'IRA', group: 'G', daysOffset: 16, hour: 4 }, // 20h UTC-7 → 04h+1 Madrid
-  { id: 'm62', home: 'NZE', away: 'BEL', group: 'G', daysOffset: 16, hour: 4 },
+  { id: 'm61', home: 'EGI', away: 'IRA', group: 'G', daysOffset: 16, hour: 5 }, // 20h UTC-7 → 04h+1 Madrid
+  { id: 'm62', home: 'NZE', away: 'BEL', group: 'G', daysOffset: 16, hour: 5 },
 
   // Grupo H (simultáneos)
   { id: 'm63', home: 'CAB', away: 'ARA', group: 'H', daysOffset: 16, hour: 2 }, // 19h UTC-5 → 01h+1 Madrid
@@ -209,8 +209,8 @@ const BASE_MATCHES = [
   { id: 'm68', home: 'JOR', away: 'ARG', group: 'J', daysOffset: 17, hour: 4 },
 
   // Grupo K (simultáneos)
-  { id: 'm69', home: 'COL', away: 'POR', group: 'K', daysOffset: 17, hour: 1 }, // 19:30h UTC-4 → ~01:30h+1 Madrid
-  { id: 'm70', home: 'RDC', away: 'UZB', group: 'K', daysOffset: 17, hour: 1 },
+  { id: 'm69', home: 'COL', away: 'POR', group: 'K', daysOffset: 17, hour: 1.5 }, // 19:30h UTC-4 → ~01:30h+1 Madrid
+  { id: 'm70', home: 'RDC', away: 'UZB', group: 'K', daysOffset: 17, hour: 1.5 },
 
   // Grupo L (simultáneos)
   { id: 'm71', home: 'PAN', away: 'ING', group: 'L', daysOffset: 16, hour: 23 }, // 17h UTC-4 → 23h Madrid
@@ -222,7 +222,18 @@ export async function seedMatches(): Promise<void> {
   const mundialStart = new Date(2026, 5, 11); // 11 de junio de 2026 (mes 5 = junio en 0-indexed)
 
   BASE_MATCHES.forEach((match) => {
-    const scheduledDate = new Date(mundialStart.getFullYear(), mundialStart.getMonth(), mundialStart.getDate() + match.daysOffset, match.hour, 0, 0);
+    // Support fractional hours (e.g. 1.5 => 1:30). Keep backwards compatibility with integer hours.
+    const rawHour = typeof match.hour === 'number' ? match.hour : Number(match.hour || 0);
+    const hourPart = Math.floor(rawHour);
+    const minutePart = Math.round((rawHour - hourPart) * 60);
+    const scheduledDate = new Date(
+      mundialStart.getFullYear(),
+      mundialStart.getMonth(),
+      mundialStart.getDate() + match.daysOffset,
+      hourPart,
+      minutePart,
+      0
+    );
     const matchRef = doc(db, 'matches', match.id);
 
     const matchPayload = {
