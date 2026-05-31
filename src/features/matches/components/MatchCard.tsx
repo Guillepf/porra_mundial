@@ -110,7 +110,7 @@ export function MatchCard({ match, prediction, onSavePrediction, onEdit, hideSav
             <img
               src={`https://flagcdn.com/84x63/${match.homeTeam.flag.toLowerCase()}.png`}
               alt={match.homeTeam.name}
-              className="h-16 w-24 object-cover rounded-md border border-border"
+              className="h-16 w-24 object-cover rounded-md"
             />
             <span className="font-bold text-xs md:text-sm tracking-tight text-foreground max-w-[90px] md:max-w-none truncate">
               {match.homeTeam.name}
@@ -138,7 +138,7 @@ export function MatchCard({ match, prediction, onSavePrediction, onEdit, hideSav
             <img
               src={`https://flagcdn.com/84x63/${match.awayTeam.flag.toLowerCase()}.png`}
               alt={match.awayTeam.name}
-              className="h-16 w-24 object-cover rounded-md border border-border"
+              className="h-16 w-24 object-cover rounded-md"
             />
             <span className="font-bold text-xs md:text-sm tracking-tight text-foreground max-w-[90px] md:max-w-none truncate">
               {match.awayTeam.name}
