@@ -43,7 +43,11 @@ service cloud.firestore {
     match /predictions/{predictionId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated() && isOwner(request.resource.data.userId) && !incomingMatchIsLocked();
-      allow update: if isAuthenticated() && isOwner(resource.data.userId) && !matchIsLocked() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['points', 'isLocked', 'userId', 'matchId']);
+      allow update: if (
+        isAdmin() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['userId', 'matchId'])
+      ) || (
+        isAuthenticated() && isOwner(resource.data.userId) && !matchIsLocked() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['points', 'isLocked', 'userId', 'matchId'])
+      );
       allow delete: if false;
     }
 
