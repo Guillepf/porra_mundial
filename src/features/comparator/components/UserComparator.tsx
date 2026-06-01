@@ -6,240 +6,199 @@ import { matchesService } from '@/features/matches/services/matchesService';
 import { UserProfile, Prediction, Match } from '@/types/global.types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
-import { Users, AlertCircle, ArrowLeftRight } from 'lucide-react';
+import { Users, AlertCircle } from 'lucide-react';
 
 export function ComparatorPage() {
   const { user } = useAuth();
-  
-  // Estados de datos
+
   const [usersList, setUsersList] = useState<UserProfile[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Usuarios seleccionados para comparar
-  const [userAId, setUserAId] = useState<string>('');
-  const [userBId, setUserBId] = useState<string>('');
+  // Multi selection of participants (columns)
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
-  // Pronósticos cargados
-  const [predictionsA, setPredictionsA] = useState<Record<string, Prediction>>({});
-  const [predictionsB, setPredictionsB] = useState<Record<string, Prediction>>({});
+  // Filters for matches
+  const [groupFilter, setGroupFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'upcoming' | 'finished'>('all');
+  const [stageFilter, setStageFilter] = useState<string>('all');
+
+  // predictions per user: userId -> { matchId -> Prediction }
+  const [predictionsMap, setPredictionsMap] = useState<Record<string, Record<string, Prediction>>>({});
   const [loadingPredictions, setLoadingPredictions] = useState(false);
 
-  // Inicializar cargando la lista de usuarios y partidos
   useEffect(() => {
-    const initPage = async () => {
+    const init = async () => {
       try {
-        const fetchedUsers = await usersService.getAllUsers();
-        setUsersList(fetchedUsers);
-        
-        const fetchedMatches = await matchesService.getMatches();
-        setMatches(fetchedMatches.filter(m => m.status === 'finished')); // Solo comparar disputados con resultados reales
-
-        // Auto-seleccionar usuario actual como Usuario A si está disponible
-        if (user) {
-          setUserAId(user.uid);
-        }
+        const [users, allMatches] = await Promise.all([
+          usersService.getAllUsers(),
+          matchesService.getMatches(),
+        ]);
+        setUsersList(users);
+        setMatches(allMatches);
+        if (user) setSelectedUsers([user.uid]);
       } catch (err) {
-        console.error('Error al inicializar comparador:', err);
+        console.error('Error inicializando comparador:', err);
       } finally {
         setLoading(false);
       }
     };
-
-    initPage();
+    init();
   }, [user]);
 
-  // Cargar pronósticos cuando cambien las selecciones de usuarios
+  // Load predictions for selected users
   useEffect(() => {
-    const fetchPredictions = async () => {
-      if (!userAId || !userBId) {
-        setPredictionsA({});
-        setPredictionsB({});
+    const load = async () => {
+      if (selectedUsers.length === 0) {
+        setPredictionsMap({});
         return;
       }
-
       setLoadingPredictions(true);
       try {
-        const [predsA, predsB] = await Promise.all([
-          predictionsService.getUserPredictions(userAId),
-          predictionsService.getUserPredictions(userBId)
-        ]);
-
-        const mapA: Record<string, Prediction> = {};
-        predsA.forEach((p) => { mapA[p.matchId] = p; });
-
-        const mapB: Record<string, Prediction> = {};
-        predsB.forEach((p) => { mapB[p.matchId] = p; });
-
-        setPredictionsA(mapA);
-        setPredictionsB(mapB);
+        const results = await Promise.all(selectedUsers.map((uid) => predictionsService.getUserPredictions(uid)));
+        const map: Record<string, Record<string, Prediction>> = {};
+        selectedUsers.forEach((uid, i) => {
+          const arr = results[i] || [];
+          const per: Record<string, Prediction> = {};
+          arr.forEach((p) => { per[p.matchId] = p; });
+          map[uid] = per;
+        });
+        setPredictionsMap(map);
       } catch (err) {
-        console.error('Error al cargar predicciones de comparación:', err);
+        console.error('Error cargando predicciones para usuarios seleccionados', err);
       } finally {
         setLoadingPredictions(false);
       }
     };
-
-    fetchPredictions();
-  }, [userAId, userBId]);
+    load();
+  }, [selectedUsers]);
 
   if (loading) {
     return (
-      <div className="flex h-[50vh] items-center justify-center">
+      <div className="flex h-[40vh] items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  // Filtrar listas de selección para evitar que seleccionen al mismo usuario en ambos lados
-  const optionsA = usersList.filter((u) => u.uid !== userBId);
-  const optionsB = usersList.filter((u) => u.uid !== userAId);
+  const GROUPS = Array.from(new Set(matches.map((m) => m.group))).filter(Boolean) as string[];
 
-  const selectedUserA = usersList.find((u) => u.uid === userAId);
-  const selectedUserB = usersList.find((u) => u.uid === userBId);
+  const filteredMatches = matches.filter((m) => {
+    if (groupFilter !== 'all' && m.group !== groupFilter) return false;
+    if (stageFilter !== 'all' && m.stage !== stageFilter) return false;
+    if (statusFilter !== 'all' && m.status !== statusFilter) return false;
+    return true;
+  });
+
+  const toggleUser = (uid: string) => {
+    setSelectedUsers((prev) => prev.includes(uid) ? prev.filter((x) => x !== uid) : [...prev, uid]);
+  };
 
   return (
     <div className="space-y-6">
-      {/* Selector de Comparación */}
       <Card>
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Users className="h-5 w-5 text-primary" />
-            <CardTitle>Comparador de Pronósticos</CardTitle>
+            <CardTitle>Comparador — Tabla partidos × participantes</CardTitle>
           </div>
-          <CardDescription>
-            Selecciona dos participantes para comparar sus estrategias, aciertos y diferencias en tiempo real
-          </CardDescription>
+          <CardDescription>Selecciona participantes y filtra los partidos que quieras ver</CardDescription>
         </CardHeader>
         <CardContent className="p-6 border-t border-border">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            {/* Usuario A */}
-            <div className="flex-1 w-full space-y-2">
-              <label className="text-xs font-black uppercase text-muted-foreground">Participante A</label>
-              <select
-                value={userAId}
-                onChange={(e) => setUserAId(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg text-sm px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
-              >
-                <option value="">Selecciona usuario...</option>
-                {optionsA.map((u) => (
-                  <option key={u.uid} value={u.uid}>
-                    {u.displayName} ({u.totalPoints} pts)
-                  </option>
-                ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="text-xs font-black uppercase text-muted-foreground">Filtrar por grupo</label>
+              <select value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)} className="w-full mt-2 bg-background border border-border rounded-lg px-3 py-2 text-sm">
+                <option value="all">Todos</option>
+                {GROUPS.map((g) => <option key={g} value={g}>Grupo {g}</option>)}
               </select>
             </div>
 
-            <ArrowLeftRight className="h-6 w-6 text-muted-foreground hidden md:block shrink-0" />
-
-            {/* Usuario B */}
-            <div className="flex-1 w-full space-y-2">
-              <label className="text-xs font-black uppercase text-muted-foreground">Participante B</label>
-              <select
-                value={userBId}
-                onChange={(e) => setUserBId(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg text-sm px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
-              >
-                <option value="">Selecciona usuario...</option>
-                {optionsB.map((u) => (
-                  <option key={u.uid} value={u.uid}>
-                    {u.displayName} ({u.totalPoints} pts)
-                  </option>
-                ))}
+            <div>
+              <label className="text-xs font-black uppercase text-muted-foreground">Estado</label>
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as any)} className="w-full mt-2 bg-background border border-border rounded-lg px-3 py-2 text-sm">
+                <option value="all">Todos</option>
+                <option value="upcoming">Por disputar</option>
+                <option value="finished">Finalizados</option>
               </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-black uppercase text-muted-foreground">Participantes (selecciona varios)</label>
+              <div className="mt-2 max-h-40 overflow-auto border border-border rounded-md p-2 bg-background">
+                {usersList.map((u) => (
+                  <label key={u.uid} className="flex items-center space-x-2 text-sm p-1">
+                    <input type="checkbox" checked={selectedUsers.includes(u.uid)} onChange={() => toggleUser(u.uid)} />
+                    <span className="truncate">{u.displayName} ({u.totalPoints})</span>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Visualización de la comparación */}
-      {!userAId || !userBId ? (
+      {selectedUsers.length === 0 ? (
         <div className="text-center py-12 bg-card border border-border rounded-2xl">
           <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground font-semibold">
-            Selecciona ambos participantes arriba para visualizar el desglose comparativo
-          </p>
+          <p className="text-muted-foreground font-semibold">Selecciona al menos un participante para mostrar la tabla</p>
         </div>
       ) : loadingPredictions ? (
         <div className="flex h-[30vh] items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
         </div>
       ) : (
-        <Card className="overflow-hidden">
+        <Card className="overflow-auto">
           <CardHeader className="bg-muted/30 border-b border-border">
-            <div className="grid grid-cols-3 items-center text-center font-black text-sm text-foreground">
-              <span className="truncate">{selectedUserA?.displayName}</span>
-              <span className="text-primary text-xs uppercase">Vs</span>
-              <span className="truncate">{selectedUserB?.displayName}</span>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm">Partidos ({filteredMatches.length})</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y divide-border">
-              {matches.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground text-sm font-semibold">
-                  No hay partidos disputados o finalizados con resultados oficiales aún
-                </div>
-              ) : (
-                matches.map((match) => {
-                  const predA = predictionsA[match.id];
-                  const predB = predictionsB[match.id];
-
-                  return (
-                    <div key={match.id} className="p-4 grid grid-cols-3 items-center text-center hover:bg-muted/15 transition-colors gap-2">
-                      {/* Pred A */}
-                      <div className="flex flex-col items-center">
-                        {predA ? (
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm font-bold bg-secondary/80 px-2 py-1 rounded">
-                              {predA.homeGoals} - {predA.awayGoals}
-                            </span>
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-black ${
-                              predA.points === 3 ? 'bg-emerald-500/20 text-emerald-500' :
-                              predA.points === 1 ? 'bg-blue-500/20 text-blue-500' : 'bg-rose-500/20 text-rose-500'
-                            }`}>
-                              {predA.points} pts
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground italic">Sin apuesta</span>
-                        )}
-                      </div>
-
-                      {/* Partido central e info de banderitas */}
-                      <div className="flex flex-col items-center justify-center space-y-1">
-                        <div className="flex items-center space-x-1.5 justify-center">
-                          <span className="text-lg" title={match.homeTeam.name}>{match.homeTeam.flag}</span>
-                          <span className="text-xs font-black text-foreground">{match.result?.homeGoals} - {match.result?.awayGoals}</span>
-                          <span className="text-lg" title={match.awayTeam.name}>{match.awayTeam.flag}</span>
+            <table className="w-full text-sm table-fixed">
+              <thead>
+                <tr className="bg-muted/20 text-xs text-muted-foreground">
+                  <th className="p-2 sticky left-0 bg-muted/20">Partido</th>
+                  {selectedUsers.map((uid) => {
+                    const u = usersList.find((x) => x.uid === uid);
+                    return <th key={uid} className="p-2">{u?.displayName}</th>;
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {filteredMatches.map((m) => (
+                  <tr key={m.id} className="border-t">
+                    <td className="p-2 w-64">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <span title={m.homeTeam.name} className="text-lg">{m.homeTeam.flag}</span>
+                          <span className="font-bold">{m.homeTeam.code}</span>
+                          <span className="text-sm">-</span>
+                          <span className="font-bold">{m.awayTeam.code}</span>
+                          <span title={m.awayTeam.name} className="text-lg">{m.awayTeam.flag}</span>
                         </div>
-                        <span className="text-[10px] font-semibold text-muted-foreground uppercase">
-                          Grupo {match.group}
-                        </span>
+                        <div className="text-xs text-muted-foreground">Grupo {m.group}</div>
                       </div>
-
-                      {/* Pred B */}
-                      <div className="flex flex-col items-center">
-                        {predB ? (
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm font-bold bg-secondary/80 px-2 py-1 rounded">
-                              {predB.homeGoals} - {predB.awayGoals}
-                            </span>
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-black ${
-                              predB.points === 3 ? 'bg-emerald-500/20 text-emerald-500' :
-                              predB.points === 1 ? 'bg-blue-500/20 text-blue-500' : 'bg-rose-500/20 text-rose-500'
-                            }`}>
-                              {predB.points} pts
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground italic">Sin apuesta</span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+                    </td>
+                    {selectedUsers.map((uid) => {
+                      const pred = predictionsMap[uid]?.[m.id];
+                      return (
+                        <td key={uid} className="p-2 text-center align-top">
+                          {pred ? (
+                            <div className="space-y-1">
+                              <div className="font-bold">{pred.homeGoals} - {pred.awayGoals}</div>
+                              <div className={`text-[11px] font-black ${pred.points === 3 ? 'text-emerald-600' : pred.points === 1 ? 'text-blue-600' : 'text-rose-600'}`}>{pred.points ?? '-' } pts</div>
+                            </div>
+                          ) : (
+                            <div className="text-xs text-muted-foreground">-</div>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </CardContent>
         </Card>
       )}
