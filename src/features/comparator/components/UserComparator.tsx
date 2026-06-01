@@ -4,6 +4,7 @@ import { usersService } from '@/features/users/services/usersService';
 import { predictionsService } from '@/features/predictions/services/predictionsService';
 import { matchesService } from '@/features/matches/services/matchesService';
 import { UserProfile, Prediction, Match } from '@/types/global.types';
+import { flagUrl, flagEmojiFromCode } from '@/lib/flags/flagsService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
 import { Users, AlertCircle } from 'lucide-react';
@@ -169,15 +170,24 @@ export function ComparatorPage() {
                 {filteredMatches.map((m) => (
                   <tr key={m.id} className="border-t">
                     <td className="p-2 w-64">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <span title={m.homeTeam.name} className="text-lg">{m.homeTeam.flag}</span>
-                          <span className="font-bold">{m.homeTeam.code}</span>
-                          <span className="text-sm">-</span>
-                          <span className="font-bold">{m.awayTeam.code}</span>
-                          <span title={m.awayTeam.name} className="text-lg">{m.awayTeam.flag}</span>
-                        </div>
-                        <div className="text-xs text-muted-foreground">Grupo {m.group}</div>
+                      <div className="flex items-center justify-center space-x-2">
+                        <img
+                          src={flagUrl(m.homeTeam.flag, 24)}
+                          alt={m.homeTeam.name}
+                          title={m.homeTeam.name}
+                          className="h-4 w-6 object-contain"
+                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                        />
+                        <span title={m.homeTeam.name} className="text-sm truncate font-medium max-w-[120px]">{m.homeTeam.name}</span>
+                        <span className="text-sm font-black">-</span>
+                        <span title={m.awayTeam.name} className="text-sm truncate font-medium max-w-[120px]">{m.awayTeam.name}</span>
+                        <img
+                          src={flagUrl(m.awayTeam.flag, 24)}
+                          alt={m.awayTeam.name}
+                          title={m.awayTeam.name}
+                          className="h-4 w-6 object-contain"
+                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                        />
                       </div>
                     </td>
                     {selectedUsers.map((uid) => {
