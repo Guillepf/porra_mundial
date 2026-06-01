@@ -5,6 +5,7 @@ import { StandingsPage } from '@/features/standings/components/StandingsPage';
 import { ComparatorPage } from '@/features/comparator/components/UserComparator';
 import { ProfilePage } from '@/features/users/components/UserProfile';
 import { AdminDashboard } from '@/features/admin/components/AdminDashboard';
+import WorldStandingsPage from '@/features/world/WorldStandingsPage';
 import { ProtectedRoute, AdminRoute } from '@/shared/components/ProtectedRoute';
 import { PageLayout } from '@/shared/components/layout/PageLayout';
 
@@ -37,6 +38,14 @@ export function Router() {
           element={
             <ProtectedRoute>
               <ComparatorPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/world"
+          element={
+            <ProtectedRoute>
+              <WorldStandingsPage />
             </ProtectedRoute>
           }
         />

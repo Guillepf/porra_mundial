@@ -108,7 +108,7 @@ export function MatchCard({ match, prediction, onSavePrediction, onEdit, hideSav
           {/* Local */}
           <div className="flex flex-col items-center space-y-2">
             <img
-              src={`https://flagcdn.com/84x63/${match.homeTeam.flag.toLowerCase()}.png`}
+              src={`https://flagcdn.com/h80/${match.homeTeam.flag.toLowerCase()}.png`}
               alt={match.homeTeam.name}
               className="h-16 w-24 object-cover rounded-md"
             />
@@ -136,7 +136,7 @@ export function MatchCard({ match, prediction, onSavePrediction, onEdit, hideSav
           {/* Visitante */}
           <div className="flex flex-col items-center space-y-2">
             <img
-              src={`https://flagcdn.com/84x63/${match.awayTeam.flag.toLowerCase()}.png`}
+              src={`https://flagcdn.com/h80/${match.awayTeam.flag.toLowerCase()}.png`}
               alt={match.awayTeam.name}
               className="h-16 w-24 object-cover rounded-md"
             />

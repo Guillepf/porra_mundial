@@ -7,12 +7,43 @@ import { Button } from '@/shared/components/ui/Button';
 import { Input } from '@/shared/components/ui/Input';
 import { Shield, Plus, Edit3, Settings, Trophy, Activity, RefreshCw } from 'lucide-react';
 import { seedMatches } from '@/lib/firebase/seed';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useAuth } from '@/app/providers/AuthProvider';
 export function AdminDashboard() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   // Marcadores editables locales por ID de partido
   const [scores, setScores] = useState<Record<string, { home: string; away: string }>>({});
+  const { user, profile } = useAuth();
+
+  // Firestore role check (debugging aid)
+  const [firestoreRole, setFirestoreRole] = useState<string | null>(null);
+  const [roleLoading, setRoleLoading] = useState(false);
+
+  const fetchFirestoreRole = async () => {
+    if (!user) {
+      setFirestoreRole(null);
+      return;
+    }
+    setRoleLoading(true);
+    try {
+      const ref = doc(db, 'users', user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data: any = snap.data();
+        setFirestoreRole(data.role ?? 'missing');
+      } else {
+        setFirestoreRole('not-found');
+      }
+    } catch (err) {
+      console.error('Error comprobando role en Firestore:', err);
+      setFirestoreRole('error');
+    } finally {
+      setRoleLoading(false);
+    }
+  };
   const loadMatches = async () => {
     setLoading(true);
     try {
@@ -35,6 +66,7 @@ export function AdminDashboard() {
   };
   useEffect(() => {
     loadMatches();
+    fetchFirestoreRole();
   }, []);
   const handleScoreChange = (matchId: string, side: 'home' | 'away', val: string) => {
     const cleaned = val.replace(/\D/g, '');
@@ -123,6 +155,16 @@ export function AdminDashboard() {
             <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
             <span>Recalcular Todo</span>
           </Button>
+          {user && (
+            <div className="flex items-center space-x-2">
+              <span className={`text-sm font-semibold ${firestoreRole === 'admin' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                {roleLoading ? 'Comprobando rol...' : `Firestore role: ${firestoreRole ?? '—'}`}
+              </span>
+              <Button variant="ghost" size="sm" onClick={fetchFirestoreRole}>
+                Refrescar rol
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       {/* Lista de Partidos para Puntuación */}

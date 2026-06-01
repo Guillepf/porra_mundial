@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/app/providers/AuthProvider';
-import { Compass, BarChart2, Users, User, Shield } from 'lucide-react';
+import { Compass, BarChart2, Users, User, Shield, Trophy } from 'lucide-react';
 
 export function Navigation() {
   const { user, profile } = useAuth();
@@ -12,6 +12,7 @@ export function Navigation() {
 
   const navItems = [
     { label: 'Partidos', path: '/', icon: Compass },
+    { label: 'Mundial', path: '/world', icon: Trophy },
     { label: 'Clasificación', path: '/standings', icon: BarChart2 },
     { label: 'Comparar', path: '/compare', icon: Users },
     { label: 'Mi Perfil', path: '/profile', icon: User },

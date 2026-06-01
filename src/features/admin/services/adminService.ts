@@ -1,5 +1,6 @@
-import { doc, setDoc, writeBatch, collection, getDocs, query, where, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, writeBatch, collection, getDocs, query, where, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import { Match, Prediction, UserProfile } from '@/types/global.types';
 import { calculatePoints } from '@/features/predictions/utils/scoringSystem';
 import { standingsService } from '@/features/standings/services/standingsService';
@@ -49,7 +50,10 @@ export const adminService = {
       ...(doc.data() as Omit<Prediction, 'id'>),
     }));
 
+    console.log('Admin setMatchResult: current auth uid=', auth.currentUser?.uid, 'predictionsCount=', predictions.length);
+
     for (const pred of predictions) {
+        console.log('Enqueue prediction update:', pred.id, { userId: pred.userId, matchId: pred.matchId });
       const points = calculatePoints({ homeGoals, awayGoals }, { homeGoals: pred.homeGoals, awayGoals: pred.awayGoals });
       const predRef = doc(db, 'predictions', pred.id);
       batch.update(predRef, {
@@ -59,7 +63,33 @@ export const adminService = {
       });
     }
 
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (err) {
+      // Si falla el batch (p. ej. permiso en alguno), intentamos aplicar updates uno-a-uno
+      console.error('Batch commit for predictions failed, falling back to individual updates', err);
+      const failedIds: string[] = [];
+
+      for (const pred of predictions) {
+        const predRef = doc(db, 'predictions', pred.id);
+        const points = calculatePoints({ homeGoals, awayGoals }, { homeGoals: pred.homeGoals, awayGoals: pred.awayGoals });
+        try {
+          await updateDoc(predRef, {
+            points,
+            isLocked: true,
+            updatedAt: serverTimestamp(),
+          });
+        } catch (e) {
+          console.error(`Failed to update prediction ${pred.id}:`, e);
+          failedIds.push(pred.id);
+            console.log('Attempting single update for prediction', pred.id, pred);
+        }
+      }
+
+      if (failedIds.length > 0) {
+        throw new Error(`Failed to update predictions: ${failedIds.join(', ')}; original error: ${String(err)}`);
+      }
+    }
 
     // 4. Recalcular las estadísticas y el puntaje acumulado de todos los usuarios
     await this.recalculateAllUsersPoints();
